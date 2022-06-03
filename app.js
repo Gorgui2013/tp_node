@@ -1,6 +1,7 @@
 const express = require('express');
 require('dotenv').config();
-const Files = require('./api/utils/files');
+// const Files = require('./api/utils/files');
+const Files = require('gwalk-lib');
 
 // init de app
 const app = express();
