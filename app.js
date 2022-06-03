@@ -1,6 +1,6 @@
 const express = require('express');
 require('dotenv').config();
-const Product = require('./products/product');
+const Files = require('./api/utils/files');
 
 // init de app
 const app = express();
@@ -15,42 +15,18 @@ app.get('', (req, res) => {
 	res.end();
 });
 
-// get all
-app.get('/products', (req, res) => {
-	const products = Product.findAll();
-	res.send(products);
-	res.end();
-});
+// Ajout des route de products
+// require('./api/modules/products/products.routes')(app);
 
-// insert one
-app.post('/products', (req, res) => {
-	const product = Product.insertOne(req.body)
-	res.send(product);
-	res.end();
-});
-
-// find one
-app.get('/products/:id', (req, res) => {
-	const product = Product.findOneById(req.params.id);
-	res.send(product);
-	res.end();
-});
-
-// update one
-app.put('/products/:id', (req, res) => {
-	const product = Product.updateOne(req.params.id, req.body);
-	res.send(product);
-	res.end();
-});
-
-// delete one
-app.delete('/products/:id', (req, res) => {
-	const result = Product.deleteOne(req.params.id);
-	res.send(result);
-	res.end();
-});
-
-
+// autoloader
+var routes = Files.walk(__dirname + '/api/modules');
+// console.log(routes);
+for(let i = 0; i < routes.length; i++) {
+	if(routes[i].indexOf('routes') !== -1){
+		// console.log(routes[i]);
+		require(routes[i])(app);
+	}
+}
 
 // demarer le serveur
 app.listen(process.env.PORT, () => {
